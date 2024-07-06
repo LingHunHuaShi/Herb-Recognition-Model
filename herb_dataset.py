@@ -21,9 +21,7 @@ def create_image_list(root_dir, output_file):
                     try:
                         # 加载图像并转换为RGB
                         img = Image.open(img_path).convert('RGB')
-                        # 可选：保存转换后的图像覆盖原图或保存为新文件
                         img.save(img_path)  # 覆盖原图
-                        # img.save(img_path[:-5] + '.jpg', 'JPEG')  # 保存为新的JPEG文件
                     except Exception as e:
                         print(f"Error processing {img_path}: {e}")
                         continue

@@ -44,7 +44,31 @@ def predict(image_path):
 
     label_index = torch.argmax(output, dim=1)
     label = labels[label_index[0]]
-    confidence = output[label_index[0]]
+    confidence = output[0][label_index[0]]
+    return label, confidence
+
+
+def predict_image(image):
+    model = load_model()
+    transform = transforms.Compose(
+        [
+            transforms.Resize(236, interpolation=InterpolationMode.BILINEAR),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ]
+    )
+    image = image.convert('RGB')
+    input_tensor = transform(image)
+    input_tensor = input_tensor.unsqueeze(0)
+
+    with torch.no_grad():
+        output = model(input_tensor)
+
+    label_index = torch.argmax(output, dim=1)
+    label = labels[label_index[0]]
+    confidence = output[0][label_index[0]]
+    confidence = torch.softmax(confidence, dim=-1)
     return label, confidence
 
 
